@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estrutura de Pastas</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+
+        #output {
+            margin: 20px auto;
+            max-width: 600px;
+            text-align: left;
+        }
+
+        #add-folder-form {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<div id="output"></div>
+
+<div id="add-folder-form">
+    <label for="new-folder-name">Nome da Nova Pasta:</label>
+    <input type="text" id="new-folder-name">
+    <label for="parent-folder">Pasta Pai:</label>
+    <select id="parent-folder"></select>
+    <button onclick="addFolder()">Adicionar Pasta</button>
+</div>
+
+<script>
+    class Folder {
+        constructor(name) {
+            this.name = name;
+            this.children = [];
+        }
+
+        addChild(childFolder) {
+            this.children.push(childFolder);
+        }
+
+        findFolder(targetName) {
+            if (this.name === targetName) {
+                return this;
+            }
+            for (const child of this.children) {
+                const result = child.findFolder(targetName);
+                if (result) {
+                    return result;
+                }
+            }
+            return null;
+        }
+
+        toString(depth = 0) {
+            let result = `${'--'.repeat(depth)} ${this.name}/\n`;
+            this.children.forEach(child => {
+                result += child.toString(depth + 1);
+            });
+            return result;
+        }
+    }
+
+    const rootFolder = new Folder('Root');
+
+    const documentsFolder = new Folder('Documents');
+    documentsFolder.addChild(new Folder('Work'));
+    documentsFolder.addChild(new Folder('Personal'));
+
+    const picturesFolder = new Folder('Pictures');
+    picturesFolder.addChild(new Folder('Vacation'));
+    picturesFolder.addChild(new Folder('Family'));
+
+    rootFolder.addChild(documentsFolder);
+    rootFolder.addChild(picturesFolder);
+
+    const outputElement = document.getElementById('output');
+    const addFolderForm = document.getElementById('add-folder-form');
+    const newFolderNameInput = document.getElementById('new-folder-name');
+    const parentFolderSelect = document.getElementById('parent-folder');
+
+    function populateFolderSelect(folder, prefix = '') {
+        const option = document.createElement('option');
+        option.value = folder.name;
+        option.textContent = `${prefix}${folder.name}`;
+        parentFolderSelect.appendChild(option);
+
+        folder.children.forEach(child => {
+            populateFolderSelect(child, `${prefix}--`);
+        });
+    }
+
+    function addFolder() {
+        const newFolderName = newFolderNameInput.value.trim();
+        const selectedParentName = parentFolderSelect.value;
+
+        if (newFolderName !== '') {
+            const newFolder = new Folder(newFolderName);
+            const selectedParent = rootFolder.findFolder(selectedParentName);
+
+            if (selectedParent) {
+                selectedParent.addChild(newFolder);
+                outputElement.textContent = rootFolder.toString();
+                newFolderNameInput.value = '';
+                parentFolderSelect.innerHTML = '';
+                populateFolderSelect(rootFolder);
+            } else {
+                alert('Pasta pai não encontrada.');
+            }
+        }
+    }
+
+    populateFolderSelect(rootFolder);
+    outputElement.textContent = rootFolder.toString();
+</script>
+
+</body>
+</html>
