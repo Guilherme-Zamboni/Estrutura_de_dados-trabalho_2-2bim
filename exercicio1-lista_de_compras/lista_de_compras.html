@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Compras Interativa</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        #list-container {
+            max-width: 400px;
+            margin: 20px auto;
+        }
+
+        #shopping-list {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .list-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px;
+            border-bottom: 1px solid #ccc;
+        }
+
+        button {
+            background-color: #4caf50;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 14px;
+            margin: 4px 2px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+<div id="list-container">
+    <h2>Lista de Compras</h2>
+    <input type="text" id="item-input" placeholder="Digite um item">
+    <button onclick="addItem()">Adicionar</button>
+
+    <ul id="shopping-list"></ul>
+</div>
+
+<script>
+    const shoppingList = [];
+
+    function addItem() {
+        const itemInput = document.getElementById('item-input');
+        const itemName = itemInput.value.trim();
+
+        if (itemName !== '') {
+            shoppingList.push(itemName);
+            itemInput.value = '';
+            renderList();
+        }
+    }
+
+    function removeItem(index) {
+        shoppingList.splice(index, 1);
+        renderList();
+    }
+
+    function renderList() {
+        const shoppingListElement = document.getElementById('shopping-list');
+        shoppingListElement.innerHTML = '';
+
+        shoppingList.forEach((item, index) => {
+            const listItem = document.createElement('li');
+            listItem.className = 'list-item';
+            listItem.innerHTML = `
+                <span>${item}</span>
+                <button onclick="removeItem(${index})">Remover</button>
+            `;
+            shoppingListElement.appendChild(listItem);
+        });
+    }
+
+    renderList();
+</script>
+
+</body>
+</html>
