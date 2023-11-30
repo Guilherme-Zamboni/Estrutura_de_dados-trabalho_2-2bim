@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fila de Atendimento ao Cliente</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+
+        #queue-container {
+            width: 50%;
+            margin: 20px auto;
+        }
+
+        #queue-list {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .queue-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px;
+            border-bottom: 1px solid #ccc;
+        }
+
+        button {
+            background-color: #4caf50;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 14px;
+            margin: 4px 2px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+<div id="queue-container">
+    <h2>Fila de Atendimento ao Cliente</h2>
+    <input type="text" id="customer-input" placeholder="Nome do Cliente">
+    <button onclick="enqueue()">Adicionar à Fila</button>
+    <button onclick="dequeue()">Atender Cliente</button>
+
+    <ul id="queue-list"></ul>
+</div>
+
+<script>
+    
+    const customerQueue = [];
+
+    function enqueue() {
+        const customerInput = document.getElementById('customer-input');
+        const customerName = customerInput.value.trim();
+
+        if (customerName !== '') {
+            customerQueue.push(customerName);
+            customerInput.value = '';
+            renderQueue();
+        }
+    }
+
+    function dequeue() {
+        if (customerQueue.length > 0) {
+            customerQueue.shift();
+            renderQueue();
+        }
+    }
+
+    function renderQueue() {
+        const queueListElement = document.getElementById('queue-list');
+        queueListElement.innerHTML = '';
+
+        customerQueue.forEach((customer) => {
+            const queueItem = document.createElement('li');
+            queueItem.className = 'queue-item';
+            queueItem.textContent = customer;
+            queueListElement.appendChild(queueItem);
+        });
+    }
+
+    renderQueue();
+</script>
+
+</body>
+</html>
