@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editor de Texto Simples</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+
+        #editor {
+            width: 80%;
+            height: 200px;
+            margin: 20px auto;
+            resize: none;
+        }
+
+        button {
+            margin-top: 10px;
+            padding: 8px 16px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+<textarea id="editor"></textarea>
+<button onclick="undo()">Desfazer</button>
+
+<script>
+    const textStack = [];
+    
+    const editor = document.getElementById('editor');
+
+    function updateText() {
+        textStack.push(editor.value);
+    }
+
+    function undo() {
+        if (textStack.length > 1) {
+            textStack.pop();
+            editor.value = textStack[textStack.length - 1];
+        }
+    }
+
+    editor.addEventListener('input', updateText);
+
+    updateText();
+</script>
+
+</body>
+</html>
